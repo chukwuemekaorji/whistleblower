@@ -1,74 +1,108 @@
 🛡️ Whistleblower Reporting MVP
-This is a secure, multi-tenant reporting platform built to help companies handle internal whistleblowing. The goal was to create a friction-less experience for employees (no accounts needed) while giving managers a robust, private dashboard to track and resolve issues.
 
-🎯 The Goal
-I built this to solve a common problem: employees are often afraid to report issues if the process is complicated or requires a login. By using "Magic Links," we ensure anonymity and ease of use, while the backend ensures that company data stays strictly isolated.
+A secure, multi-tenant whistleblower reporting platform designed to make internal reporting frictionless for employees while giving managers a private dashboard to track and resolve issues.
+The project prioritizes anonymity, data isolation, and local-first reviewability using Docker.
+
+🎯 Project Goal
+Employees are often hesitant to report issues when the process is complicated or requires an account.
+This MVP removes that friction by using Magic Links, allowing anonymous submissions while ensuring that each company’s data remains strictly isolated.
 
 🛠️ Tech Stack
-I chose this stack for performance, safety, and rapid development:
-Backend: Python (FastAPI), SQLAlchemy (ORM), and PostgreSQL.
+Backend
 
-Validation & Security: Pydantic for data integrity, JWT for sessions, and Passlib (bcrypt) for password hashing.
+Python (FastAPI)
+SQLAlchemy (ORM)
+PostgreSQL
+Security & Validation
+Pydantic
+JWT-based authentication
+Passlib (bcrypt) for password hashing
 
-Frontend: React (Vite) with Axios for a fast, responsive UI.
+Frontend
 
-Infrastructure: Fully containerized with Docker and Docker Compose.
+React (Vite)
+Axios
 
-Communications: Integrated with SendGrid for real-time email alerts.
+Infrastructure
+Docker & Docker Compose
 
-🚀 How to Run (Step-by-Step)
-Since the entire project is Dockerized, you don’t need to worry about installing Python, Node, or Postgres on your machine.
+Email
+SendGrid (optional for local testing)
 
-1. Prerequisites
-Make sure you have Docker Desktop installed and running.
+🚀 How to Run (Local / Docker)
 
-Download Docker Desktop
+⚠️ Important: On first run, PostgreSQL needs a few seconds to initialize before the backend can connect.
+To avoid startup issues, start the services in two steps.
 
-2. Clone & Setup
-Open your terminal and run:
+Prerequisites:
+Docker Desktop installed and running
+
+1️⃣ Clone the Repository on your IDE
 git clone https://github.com/chukwuemekaorji/whistleblower
 cd whistleblower
 
-3. Environment Config
-Copy the example environment file. The defaults are already set up to work with the Docker containers:
+2️⃣ Environment Setup
 cp .env.example .env
-(Note: If you want to test live emails, add your SendGrid API key inside this .env file.)
 
-4. Fire it up
-Build and start the system with one command:
-docker-compose up --build
 
-🔗 Quick Links
-Once the containers are running, you can access the app here:
-Manager Dashboard (Frontend): http://localhost:5173
-API Documentation (Swagger): http://localhost:8000/docs
+ℹ️ The default values are already configured for Docker usage.
+Only add a SendGrid API key if you want to test live emails.
 
-📝 How it Works
+3️⃣ Start Database First (Terminal 1)
+docker compose up -d db
+
+
+Wait 5–10 seconds for PostgreSQL to fully initialize, then run:
+
+docker compose restart backend
+
+
+Once running, you should see:
+
+Application startup complete.
+Uvicorn running on http://0.0.0.0:8000
+
+
+📘 API Docs (Swagger):
+http://localhost:8000/docs
+
+4️⃣ Start the Frontend (Terminal 2)
+docker compose up frontend
+
+
+🖥️ Frontend Dashboard:
+http://localhost:5173
+
+📝 How the System Works
 For Managers
-Sign up and log in.
 
-Grab your Unique Magic Link from the dashboard.
+Sign up and log in
 
-Share that link with your team.
+Generate a unique Magic Link
 
-Track new reports in real-time and update their status (In Review, Resolved, etc.).
+Share the link with employees
+
+Track incoming reports and update their status
 
 For Employees
-Open the company's magic link.
 
-Fill out the report—choose to stay 100% anonymous or provide contact info.
+Open the Magic Link
 
-Hit submit. No account creation or login required.
+Submit a report (anonymous or identified)
 
-⚖️ Trade-offs & MVP Limitations
-To meet the project timeline while maintaining high security, I made the following decisions:
+No account or login required
 
-Local-First: I prioritized a perfect Docker setup over a cloud deployment to ensure it runs immediately for any reviewer without cost/credential hurdles.
 
-Text-Only: To keep the data layer simple, reports are text-based for now (no file/image uploads yet).
+⚖️ MVP Trade-offs & Limitations
+Text-only Reports:
+No file or image uploads yet.
 
-Simple Roles: Every registered user is a Manager. Advanced Admin roles would be the next step.
+Simple Roles:
+All authenticated users are managers.
 
-Background Tasks: Emails are currently sent during the request. For high-volume production, I would move these to a background worker like Celery.
+Email Handling:
+Emails are sent synchronously.
+A production system would use background workers (e.g., Celery).
 
-UI Focus: I focused 90% of my time on security, data isolation, and the Docker environment rather than custom UI styling.
+UI Styling:
+Focus was placed on security, data isolation, and infrastructure rather than custom UI polish.
