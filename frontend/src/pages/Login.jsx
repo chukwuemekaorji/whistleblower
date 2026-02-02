@@ -75,8 +75,6 @@ export default function Login() {
                             style={inputStyle}
                         />
                     </div>
-
-                    // Submit button
                     <button 
                         type="submit" 
                         disabled={isSubmitting} 
